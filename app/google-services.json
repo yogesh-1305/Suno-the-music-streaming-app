@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "230253852017",
+    "firebase_url": "https://suno-a13ab.firebaseio.com",
+    "project_id": "suno-a13ab",
+    "storage_bucket": "suno-a13ab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:230253852017:android:bf77835c5c1e32d9bbf2d0",
+        "android_client_info": {
+          "package_name": "com.suno"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "230253852017-948156tacnblrrut7k2ci881lhmud3pp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2VsTlvPKQCV3gG86ZKhZv38dx-g8dJjQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "230253852017-948156tacnblrrut7k2ci881lhmud3pp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
