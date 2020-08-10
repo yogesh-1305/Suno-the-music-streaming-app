@@ -9,9 +9,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.OpenableColumns;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,29 +49,36 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity {
     private boolean checkPermission = false;
-    Uri uri;
-    private StorageReference storageReference;
     ProgressDialog progressDialog;
     ListView listView;
-    ArrayList<String> songsNameList;
-    ArrayList<String> songsUrlList;
-    ArrayAdapter<String> adapter;
+    List<String> songsNameList;
+    List<String> songsUrlList;
+    ListAdapter adapter;
     JcPlayerView jcPlayerView;
-    ArrayList<JcAudio> jcAudios;
+    List<JcAudio> jcAudios;
+    List<Bitmap> thumbnail;
+    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        storageReference = FirebaseStorage.getInstance().getReference();
         progressDialog = new ProgressDialog(this);
         progressDialog.show();
         progressDialog.setMessage("Please Wait...");
@@ -74,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         songsNameList = new ArrayList<>();
         songsUrlList = new ArrayList<>();
         jcAudios = new ArrayList<>();
+        thumbnail = new ArrayList<>();
         jcPlayerView = findViewById(R.id.jcplayer);
         retrieveSongs();
 
@@ -95,13 +108,23 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 songsNameList.clear();
                 songsUrlList.clear();
-                for (DataSnapshot ds : snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     Song song = ds.getValue(Song.class);
                     songsNameList.add(song.getSongName());
                     songsUrlList.add(song.getSongUrl());
-                    jcAudios.add(JcAudio.createFromURL(song.getSongName(),song.getSongUrl()));
+                    String imageUrl = song.getImageUrl();
+                    ImageDownload imageDownload = new ImageDownload();
+                    try {
+                        bitmap = imageDownload.execute(imageUrl).get();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    thumbnail.add(bitmap);
+                    Log.i("bitmapppppp", bitmap.toString());
+                    jcAudios.add(JcAudio.createFromURL(song.getSongName(), song.getSongUrl()));
                 }
-                adapter = new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_list_item_1,songsNameList);
+
+                adapter = new ListAdapter(getApplicationContext(),songsNameList, thumbnail);
                 jcPlayerView.initPlaylist(jcAudios,null);
                 listView.setAdapter(adapter);
                 progressDialog.dismiss();
@@ -114,6 +137,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+//    public static Bitmap getBitmapFromURL(String src) {
+//        try {
+//            URL url = new URL(src);
+//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//            connection.setDoInput(true);
+//            connection.connect();
+//            InputStream input = connection.getInputStream();
+//            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+//            return myBitmap;
+//        } catch (IOException e) {
+//            // Log exception
+//            return null;
+//        }
+//    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.app_menu,menu);
@@ -124,107 +162,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.uploadItem){
             if (validatePermissions()){
-                pickSong();
+                Intent intent = new Intent(this,UploadSongActivity.class);
+                startActivity(intent);
             }
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    // SELECT THE SONG TO UPLOAD FROM MOBILE STORAGE
-    private void pickSong() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("audio/*");
-        startActivityForResult(intent,1);
-    }
-
-    // AFTER SELECTING THE SONG FROM MOBILE STORAGE
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (data != null) {
-            if (requestCode == 1 && resultCode == RESULT_OK) {
-                uri = data.getData();
-                Log.i("uri", uri.toString());
-                String fileName = getFileName(uri);
-                Log.i("songName", fileName);
-                uploadFileToServer(uri,getFileName(uri));
-            }
-        }
-    }
-
-    // METHOD TO HANDEL SONG UPLOAD TO THE STORAGE SERVER
-    public void uploadFileToServer(Uri uri, final String songName){
-        StorageReference filePath = storageReference.child("Audios").child(songName);
-        progressDialog.show();
-        filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Log.i("success", "upload");
-                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                while (!uriTask.isComplete());
-                Uri urlSong = uriTask.getResult();
-                String songUrl = urlSong.toString();
-                Log.i("success url ", songUrl);
-                uploadDetailsToDatabase(songName,songUrl);
-                progressDialog.dismiss();
-                Toast.makeText(MainActivity.this, "Upload Successful", Toast.LENGTH_SHORT).show();
-            }
-
-        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                double progress = (100.0*taskSnapshot.getBytesTransferred())/taskSnapshot.getTotalByteCount();
-                int currentProgress = (int) progress;
-                progressDialog.setMessage("Uploading: " + currentProgress + "%");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.i("success", "upload");
-                progressDialog.dismiss();
-                Toast.makeText(MainActivity.this, "Upload Failed! Please Try again!", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    // UPLOAD SONG NAME AND URL TO REALTIME DATABASE
-    public void uploadDetailsToDatabase(String songName, String songUrl){
-
-        Song song = new Song(songName,songUrl);
-        FirebaseDatabase.getInstance().getReference("Songs")
-                .push().setValue(song).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(MainActivity.this, "Song Uploaded to Database", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
-
-    // METHOD TO GET THE SONG NAME
-    public String getFileName(Uri uri) {
-        String result = null;
-        if (Objects.equals(uri.getScheme(), "content")) {
-            try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
-                if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                }
-            }
-        }
-        if (result == null) {
-            result = uri.getPath();
-            assert result != null;
-            int cut = result.lastIndexOf('/');
-            if (cut != -1) {
-                result = result.substring(cut + 1);
-            }
-        }
-        return result;
     }
 
     // METHOD TO HANDEL RUNTIME PERMISSIONS
