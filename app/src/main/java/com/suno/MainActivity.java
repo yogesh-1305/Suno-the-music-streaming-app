@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 jcPlayerView.playAudio(jcAudios.get(i));
                 jcPlayerView.setVisibility(View.VISIBLE);
                 jcPlayerView.createNotification();
+                adapter.notifyDataSetChanged();
             }
         });
     }
@@ -106,8 +107,6 @@ public class MainActivity extends AppCompatActivity {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                songsNameList.clear();
-                songsUrlList.clear();
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     Song song = ds.getValue(Song.class);
                     songsNameList.add(song.getSongName());
@@ -120,13 +119,12 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     thumbnail.add(bitmap);
-                    Log.i("bitmapppppp", bitmap.toString());
                     jcAudios.add(JcAudio.createFromURL(song.getSongName(), song.getSongUrl()));
                 }
-
                 adapter = new ListAdapter(getApplicationContext(),songsNameList, thumbnail);
                 jcPlayerView.initPlaylist(jcAudios,null);
                 listView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
                 progressDialog.dismiss();
             }
 
