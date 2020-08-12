@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.example.jean.jcplayer.model.JcAudio;
@@ -28,13 +29,14 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class MainActivity extends AppCompatActivity {
     private boolean checkPermission = false;
     ProgressDialog progressDialog;
     ListView listView;
     List<String> songsNameList;
     List<String> songsUrlList;
+    List<String> songsArtistList;
+    List<String> songsDurationList;
     ListAdapter adapter;
     JcPlayerView jcPlayerView;
     List<JcAudio> jcAudios;
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         listView = findViewById(R.id.songsList);
         songsNameList = new ArrayList<>();
         songsUrlList = new ArrayList<>();
+        songsArtistList = new ArrayList<>();
+        songsDurationList = new ArrayList<>();
         jcAudios = new ArrayList<>();
         thumbnail = new ArrayList<>();
         jcPlayerView = findViewById(R.id.jcplayer);
@@ -76,10 +80,13 @@ public class MainActivity extends AppCompatActivity {
                     Song song = ds.getValue(Song.class);
                     songsNameList.add(song.getSongName());
                     songsUrlList.add(song.getSongUrl());
+                    songsArtistList.add(song.getSongArtist());
+                    songsDurationList.add(song.getSongDuration());
                     thumbnail.add(song.getImageUrl());
+
                     jcAudios.add(JcAudio.createFromURL(song.getSongName(), song.getSongUrl()));
                 }
-                adapter = new ListAdapter(getApplicationContext(), songsNameList, thumbnail);
+                adapter = new ListAdapter(getApplicationContext(), songsNameList, thumbnail, songsArtistList, songsDurationList);
                 jcPlayerView.initPlaylist(jcAudios, null);
                 listView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/common_google_signin_btn_text_dark_focused"
     android:paddingTop="3dp">
 
     <androidx.cardview.widget.CardView
@@ -16,12 +17,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="5dp"
             android:background="#FA020101"
+            android:orientation="horizontal"
+            android:padding="3dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/cardView"
@@ -30,22 +31,64 @@
             <ImageView
                 android:id="@+id/songThumbnail"
                 android:layout_width="70dp"
-                android:layout_height="50dp"/>
+                android:layout_height="50dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/currentlyPlaying"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/ic_baseline_play_arrow_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/artistName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/handlee"
+                android:paddingStart="10dp"
+                android:text="artist name |"
+                android:textColor="#878383"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/songThumbnail"
+                app:layout_constraintTop_toBottomOf="@+id/songName" />
 
             <TextView
                 android:id="@+id/songName"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fontFamily="serif-monospace"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/handlee"
                 android:paddingStart="10dp"
-                android:paddingTop="15dp"
-                android:paddingBottom="10dp"
                 android:text="song name"
                 android:textAlignment="gravity"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/currentlyPlaying"
+                app:layout_constraintStart_toEndOf="@+id/songThumbnail"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/songDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:paddingStart="10dp"
+                android:text="3:00"
+                android:textColor="#858181"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/artistName"
+                app:layout_constraintTop_toBottomOf="@+id/songName" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
