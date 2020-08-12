@@ -4,9 +4,6 @@ public class Song {
     private String songName,songUrl;
     private String imageUrl;
 
-    public Song() {
-    }
-
     public Song(String songName, String songUrl, String imageUrl) {
         this.songName = songName;
         this.songUrl = songUrl;

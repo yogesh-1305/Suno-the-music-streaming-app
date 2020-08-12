@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class UploadSongActivity extends AppCompatActivity {
-    Uri songName, image;
+    Uri uriSong, image;
     byte[] bytes;
     String fileName, songUrl, imageUrl;
     private StorageReference storageReference;
@@ -88,9 +88,9 @@ public class UploadSongActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null) {
             if (requestCode == 1 && resultCode == RESULT_OK) {
-                songName = data.getData();
+                uriSong = data.getData();
 //                Log.i("uri", songName.toString());
-                fileName = getFileName(songName);
+                fileName = getFileName(uriSong);
                 selectSong.setText(fileName);
 //                Log.i("songName", fileName);
             }
@@ -112,10 +112,10 @@ public class UploadSongActivity extends AppCompatActivity {
 
     public void upload(View view){
         uploadImageToServer(bytes,fileName);
-        uploadFileToServer(songName,fileName);
+        uploadFileToServer(uriSong,fileName);
     }
 
-    public void uploadImageToServer(byte[] image,String fileName) {
+    public void uploadImageToServer(byte[] image, String fileName) {
         UploadTask uploadTask = storageReference.child("Thumbnails").child(fileName).putBytes(image);
         progressDialog.show();
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
