@@ -7,10 +7,12 @@ public class Song {
     public Song() {
     }
 
-    public Song(String songName, String songUrl, String imageUrl) {
+    public Song(String songName, String songUrl, String imageUrl, String songArtist, String songDuration) {
         this.songName = songName;
         this.songUrl = songUrl;
         this.imageUrl = imageUrl;
+        this.songArtist = songArtist;
+        this.songDuration = songDuration;
     }
 
     public String getSongArtist() {

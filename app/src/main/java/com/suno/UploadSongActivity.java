@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -15,8 +16,9 @@ import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,27 +34,34 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class UploadSongActivity extends AppCompatActivity {
     Uri uriSong, image;
     byte[] bytes;
     String fileName, songUrl, imageUrl;
+    String songLength;
     private StorageReference storageReference;
     ProgressDialog progressDialog;
-    TextView selectSong;
+    EditText selectSongNameEditText;
+    EditText artistName;
     ImageView selectImage;
     Button uploadButton;
+    ImageButton selectSong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_song);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Upload Song");
         storageReference = FirebaseStorage.getInstance().getReference();
         progressDialog = new ProgressDialog(this);
 
-        selectSong = findViewById(R.id.selectSong);
+        selectSongNameEditText = findViewById(R.id.selectSong);
         selectImage = findViewById(R.id.selectImage);
         uploadButton = findViewById(R.id.uploadSongButton);
+        artistName = findViewById(R.id.artistNameEditText);
+        selectSong = findViewById(R.id.selectSongButton);
 
         selectSong.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,8 +100,9 @@ public class UploadSongActivity extends AppCompatActivity {
                 uriSong = data.getData();
 //                Log.i("uri", songName.toString());
                 fileName = getFileName(uriSong);
-                selectSong.setText(fileName);
-//                Log.i("songName", fileName);
+                selectSongNameEditText.setText(fileName);
+                songLength = getSongDuration(uriSong);
+                Log.i("duration", songLength);
             }
             if (requestCode == 2 && resultCode == RESULT_OK){
 //                Log.i("image",data.toString());
@@ -111,8 +121,24 @@ public class UploadSongActivity extends AppCompatActivity {
     }
 
     public void upload(View view){
-        uploadImageToServer(bytes,fileName);
-        uploadFileToServer(uriSong,fileName);
+        if (uriSong == null){
+            Toast.makeText(this, "Please select a song", Toast.LENGTH_SHORT).show();
+        }
+        else if (selectSongNameEditText.getText().toString().equals("")){
+            Toast.makeText(this, "Song name cannot be empty!", Toast.LENGTH_SHORT).show();
+        }
+        else if(artistName.getText().toString().equals("")){
+            Toast.makeText(this, "Please add Artist, album name", Toast.LENGTH_SHORT).show();
+        }
+        else if (image == null){
+            Toast.makeText(this, "Please select a Thumbnail", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            fileName = selectSongNameEditText.getText().toString();
+            String artist = artistName.getText().toString();
+            uploadImageToServer(bytes,fileName);
+            uploadFileToServer(uriSong,fileName,artist,songLength);
+        }
     }
 
     public void uploadImageToServer(byte[] image, String fileName) {
@@ -136,7 +162,7 @@ public class UploadSongActivity extends AppCompatActivity {
     }
 
     // METHOD TO HANDEL SONG UPLOAD TO THE STORAGE SERVER
-    public void uploadFileToServer(Uri uri, final String songName){
+    public void uploadFileToServer(Uri uri, final String songName, final String artist, final String duration){
         StorageReference filePath = storageReference.child("Audios").child(songName);
         progressDialog.show();
         filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -148,7 +174,7 @@ public class UploadSongActivity extends AppCompatActivity {
                 Uri urlSong = uriTask.getResult();
                 songUrl = urlSong.toString();
 //                Log.i("success url ", songUrl);
-                uploadDetailsToDatabase(fileName,songUrl,imageUrl);
+                uploadDetailsToDatabase(fileName,songUrl,imageUrl,artist,duration);
 //                progressDialog.dismiss();
             }
 
@@ -170,9 +196,9 @@ public class UploadSongActivity extends AppCompatActivity {
     }
 
     // UPLOAD SONG NAME AND URL TO REALTIME DATABASE
-    public void uploadDetailsToDatabase(String songName, String songUrl, String imageUrl){
+    public void uploadDetailsToDatabase(String songName, String songUrl, String imageUrl, String artistName, String songDuration){
 
-        Song song = new Song(songName,songUrl,imageUrl);
+        Song song = new Song(songName,songUrl,imageUrl,artistName,songDuration);
         FirebaseDatabase.getInstance().getReference("Songs")
                 .push().setValue(song).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -210,5 +236,20 @@ public class UploadSongActivity extends AppCompatActivity {
             }
         }
         return result;
+    }
+
+    public String getSongDuration(Uri song){
+        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+        mediaMetadataRetriever.setDataSource(getApplicationContext(),song);
+        String durationString = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+        long time = Long.parseLong(durationString);
+        int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(time);
+        int totalSeconds = (int) TimeUnit.MILLISECONDS.toSeconds(time);
+        int seconds = totalSeconds-(minutes*60);
+        if (String.valueOf(seconds).length() == 1){
+            return minutes + ":0" + seconds;
+        }else {
+            return minutes + ":" + seconds;
+        }
     }
 }

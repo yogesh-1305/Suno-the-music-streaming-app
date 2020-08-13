@@ -53,17 +53,10 @@ public class ListAdapter extends BaseAdapter {
         }else {
             viewHolder = (ViewHolder) view.getTag();
         }
+        Picasso.get().load(thumbnails.get(i)).into(viewHolder.thumbnail);
         viewHolder.songName.setText(songNames.get(i));
         viewHolder.artistName.setText(songArtist.get(i));
         viewHolder.songDuration.setText(songDuration.get(i));
-        Picasso.get().load(thumbnails.get(i)).into(viewHolder.thumbnail);
-
-//        viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                viewHolder.currentlyPlaying.setVisibility(View.VISIBLE);
-//            }
-//        });
         return view;
     }
 
