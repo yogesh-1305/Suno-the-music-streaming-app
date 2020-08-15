@@ -6,6 +6,8 @@ import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-import android.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -25,7 +26,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
-import java.util.logging.Logger;
 
 public class SignUpActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -39,6 +39,8 @@ public class SignUpActivity extends AppCompatActivity {
     Button loginButton;
     Button signUpButton;
     ToggleButton toggleButton;
+    ToggleButton logInCardShowPassword;
+    ToggleButton signUpCardShowPassword;
 
     CardView loginCardView;
     CardView signUpCardView;
@@ -86,9 +88,31 @@ public class SignUpActivity extends AppCompatActivity {
 
         loginCardView = findViewById(R.id.logInCardView);
         signUpCardView = findViewById(R.id.signUpCardView);
+        logInCardShowPassword = findViewById(R.id.loginPasswordShowButton);
+        logInCardShowPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (!b){
+                    loginPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                }else {
+                    loginPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                }
+            }
+        });
+
+        signUpCardShowPassword = findViewById(R.id.signupPasswordShowButton);
+        signUpCardShowPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (!b){
+                    signUpPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                }else {
+                    signUpPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                }
+            }
+        });
 
         toggleButton = findViewById(R.id.loginSignupToggleButton);
-
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -126,7 +150,7 @@ public class SignUpActivity extends AppCompatActivity {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(SignUpActivity.this, "Login Error!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, e.getMessage() , Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -134,22 +158,34 @@ public class SignUpActivity extends AppCompatActivity {
 
     public void signUp(){
         final String email = signUpEmail.getText().toString();
+        final String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         final String password = signUpPassword.getText().toString();
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                FirebaseUser user = mAuth.getCurrentUser();
-                assert user != null;
-                Toast.makeText(SignUpActivity.this, "Signed Up as: " + email, Toast.LENGTH_SHORT).show();
-                uploadUserDetailsToDatabase(email, password);
-                UpdateUI();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.i("sign up", "failed");
-            }
-        });
+        final String retypePassword = signUpRetypePassword.getText().toString();
+        if (email.equals("")){
+            Toast.makeText(this, "Email address required!", Toast.LENGTH_SHORT).show();
+        }else if (!email.matches(emailPattern)){
+            Toast.makeText(this, "Please Enter a Valid Email!", Toast.LENGTH_SHORT).show();
+        }else if (password.equals("")){
+            Toast.makeText(this, "Password required!", Toast.LENGTH_SHORT).show();
+        }else if (!password.equals(retypePassword)){
+            Toast.makeText(this, "Passwords did not matched!", Toast.LENGTH_SHORT).show();
+        }else {
+            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    assert user != null;
+                    Toast.makeText(SignUpActivity.this, "Signed Up as: " + email, Toast.LENGTH_SHORT).show();
+                    uploadUserDetailsToDatabase(email, password);
+                    UpdateUI();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.i("sign up", "failed");
+                }
+            });
+        }
     }
 
     public void uploadUserDetailsToDatabase(String email, String password){

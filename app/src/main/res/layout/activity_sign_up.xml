@@ -45,7 +45,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -132,6 +132,20 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/capture" />
 
+            <ToggleButton
+                android:id="@+id/signupPasswordShowButton"
+                android:layout_width="60dp"
+                android:layout_height="0dp"
+                android:background="#00FFFFFF"
+                android:text="ToggleButton"
+                android:textColor="#FFFFFF"
+                android:textOff="show"
+                android:textOn="hide"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/singUpPasswordEditText"
+                app:layout_constraintEnd_toEndOf="@+id/singUpPasswordEditText"
+                app:layout_constraintTop_toTopOf="@+id/singUpPasswordEditText" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
@@ -148,7 +162,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appLogo"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -228,6 +242,20 @@
                 app:layout_constraintHorizontal_bias="0.11"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/loginUsernameEditText" />
+
+            <ToggleButton
+                android:id="@+id/loginPasswordShowButton"
+                android:layout_width="60dp"
+                android:layout_height="0dp"
+                android:background="#00FFFFFF"
+                android:text="ToggleButton"
+                android:textColor="#FFFFFF"
+                android:textOff="Show"
+                android:textOn="hide"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/loginPaswordEditText"
+                app:layout_constraintEnd_toEndOf="@+id/loginPaswordEditText"
+                app:layout_constraintTop_toTopOf="@+id/loginPaswordEditText" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
