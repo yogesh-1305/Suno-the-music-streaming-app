@@ -3,16 +3,26 @@ package com.suno;
 public class Song {
     private String songName,songUrl;
     private String imageUrl, songArtist, songDuration;
+    private String userEmail;
 
     public Song() {
     }
 
-    public Song(String songName, String songUrl, String imageUrl, String songArtist, String songDuration) {
+    public Song(String userEmail, String songName, String songUrl, String imageUrl, String songArtist, String songDuration) {
         this.songName = songName;
         this.songUrl = songUrl;
         this.imageUrl = imageUrl;
         this.songArtist = songArtist;
         this.songDuration = songDuration;
+        this.userEmail = userEmail;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     public String getSongArtist() {

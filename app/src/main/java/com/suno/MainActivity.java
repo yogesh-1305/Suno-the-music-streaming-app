@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import com.example.jean.jcplayer.model.JcAudio;
 import com.example.jean.jcplayer.view.JcPlayerView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,10 +43,13 @@ public class MainActivity extends AppCompatActivity {
     List<JcAudio> jcAudios;
     List<String> thumbnail;
 
+    FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
         progressDialog.show();
         progressDialog.setMessage("Please Wait...");
@@ -112,6 +116,13 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(this,UploadSongActivity.class);
                 startActivity(intent);
             }
+        }else if (item.getItemId() == R.id.signOut){
+            mAuth.signOut();
+            Intent intent = new Intent(getApplicationContext(),SignUpActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

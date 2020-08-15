@@ -25,6 +25,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -40,7 +42,7 @@ public class UploadSongActivity extends AppCompatActivity {
     Uri uriSong, image;
     byte[] bytes;
     String fileName, songUrl, imageUrl;
-    String songLength;
+    String songLength, currentUser;
     private StorageReference storageReference;
     ProgressDialog progressDialog;
     EditText selectSongNameEditText;
@@ -49,11 +51,18 @@ public class UploadSongActivity extends AppCompatActivity {
     Button uploadButton;
     ImageButton selectSong;
 
+    FirebaseAuth mAuth;
+    FirebaseUser user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_song);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Upload Song");
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        assert user != null;
+        currentUser = user.getEmail();
         storageReference = FirebaseStorage.getInstance().getReference();
         progressDialog = new ProgressDialog(this);
 
@@ -198,7 +207,7 @@ public class UploadSongActivity extends AppCompatActivity {
     // UPLOAD SONG NAME AND URL TO REALTIME DATABASE
     public void uploadDetailsToDatabase(String songName, String songUrl, String imageUrl, String artistName, String songDuration){
 
-        Song song = new Song(songName,songUrl,imageUrl,artistName,songDuration);
+        Song song = new Song(currentUser,songName,songUrl,imageUrl,artistName,songDuration);
         FirebaseDatabase.getInstance().getReference("Songs")
                 .push().setValue(song).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

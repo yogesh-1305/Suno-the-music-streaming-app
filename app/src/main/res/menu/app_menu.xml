@@ -6,4 +6,7 @@
         android:title="uploadSong"
         app:showAsAction="always"
         android:icon="@drawable/ic_baseline_cloud_upload_24"/>
+
+    <item android:id="@+id/signOut"
+        android:title="SignOut"/>
 </menu>
