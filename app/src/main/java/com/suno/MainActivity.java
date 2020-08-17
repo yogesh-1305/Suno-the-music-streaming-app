@@ -119,10 +119,8 @@ public class MainActivity extends AppCompatActivity {
         }else if (item.getItemId() == R.id.signOut){
             mAuth.signOut();
             Intent intent = new Intent(getApplicationContext(),SignUpActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
