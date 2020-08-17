@@ -25,6 +25,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -49,6 +50,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -67,7 +69,7 @@ public class SignUpActivity extends AppCompatActivity {
     ToggleButton logInCardShowPassword;
     ToggleButton signUpCardShowPassword;
 
-    SignInButton signInButton;
+    Button signInButton;
 
     CardView loginCardView;
     CardView signUpCardView;
@@ -101,25 +103,30 @@ public class SignUpActivity extends AppCompatActivity {
 
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
-        LoginButton facebookLoginButton = findViewById(R.id.facebookLoginButton);
-        facebookLoginButton.setReadPermissions("email", "public_profile");
-        facebookLoginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+        Button facebookLoginButton = findViewById(R.id.facebookLoginButton);
+        facebookLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
+            public void onClick(View view) {
+                LoginManager.getInstance().logInWithReadPermissions(SignUpActivity.this, Arrays.asList("email", "public profile"));
+                LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
 //                Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                handleFacebookAccessToken(loginResult.getAccessToken());
-            }
+                        handleFacebookAccessToken(loginResult.getAccessToken());
+                    }
 
-            @Override
-            public void onCancel() {
+                    @Override
+                    public void onCancel() {
 //                Log.d(TAG, "facebook:onCancel");
-                // ...
-            }
+                        // ...
+                    }
 
-            @Override
-            public void onError(FacebookException error) {
+                    @Override
+                    public void onError(FacebookException error) {
 //                Log.d(TAG, "facebook:onError", error);
-                // ...
+                        // ...
+                    }
+                });
             }
         });
 
@@ -136,12 +143,13 @@ public class SignUpActivity extends AppCompatActivity {
         logInCardShowPassword = findViewById(R.id.loginPasswordShowButton);
         signUpCardShowPassword = findViewById(R.id.signupPasswordShowButton);
         toggleButton = findViewById(R.id.loginSignupToggleButton);
+
         // GOOGLE SIGN IN BUTTON
         signInButton = findViewById(R.id.googleSignInButton);
 
         // GOOGLE SIGN IN OPTIONS TO GET THE USERDATA
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken(getString(R.string.web_client_id))
                 .requestEmail()
                 .build();
         googleSignInClient = GoogleSignIn.getClient(this,googleSignInOptions);
@@ -285,6 +293,7 @@ public class SignUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
+                            assert user != null;
                             Toast.makeText(SignUpActivity.this, "Signed in as: " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
                             progressDialog.dismiss();
                             UpdateUI();
@@ -330,6 +339,7 @@ public class SignUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
+                            assert user != null;
                             Toast.makeText(SignUpActivity.this, "Signed in as: " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
                             progressDialog.dismiss();
                             UpdateUI();

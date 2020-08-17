@@ -25,8 +25,8 @@
         android:layout_height="wrap_content"
         android:background="#00FFFFFF"
         android:textColor="#FFFFFF"
-        android:textOff="Sign up"
-        android:textOn="log in"
+        android:textOff="not regestered? Sign up"
+        android:textOn="already a user? log in"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -47,7 +47,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="#000000">
 
             <Button
                 android:id="@+id/signUpButton"
@@ -67,7 +68,7 @@
             <EditText
                 android:id="@+id/singUpPasswordEditText"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
@@ -86,7 +87,7 @@
             <EditText
                 android:id="@+id/singUpRetypePasswordEditText"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
@@ -105,7 +106,7 @@
             <EditText
                 android:id="@+id/singUpEmailEditText"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="24dp"
@@ -141,13 +142,11 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/logInCardView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="90dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="32dp"
         android:visibility="visible"
         app:cardCornerRadius="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/loginSignupToggleButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -155,7 +154,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="#000000">
 
             <Button
                 android:id="@+id/loginButton"
@@ -171,25 +171,40 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/loginPaswordEditText" />
 
-            <com.google.android.gms.common.SignInButton
+            <Button
                 android:id="@+id/googleSignInButton"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="8dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/google_login_button_layout"
+                android:drawableStart="@drawable/ic_icons8_google"
+                android:paddingStart="40dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="45dp"
+                android:paddingBottom="5dp"
+                android:text="sign in with google"
                 app:layout_constraintBottom_toTopOf="@+id/facebookLoginButton"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.536"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <com.facebook.login.widget.LoginButton
+            <Button
                 android:id="@+id/facebookLoginButton"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginBottom="16dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/facebook_login_button_layout"
+                android:drawableStart="@drawable/ic_icons8_facebook"
+                android:paddingStart="40dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="45dp"
+                android:paddingBottom="5dp"
+                android:text="Login with facebook"
+                android:textColor="#FFFFFF"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -198,7 +213,7 @@
             <EditText
                 android:id="@+id/loginUsernameEditText"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
@@ -217,9 +232,9 @@
             <EditText
                 android:id="@+id/loginPaswordEditText"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/edit_text_layout"
                 android:ems="10"
@@ -232,6 +247,19 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/loginUsernameEditText" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:text="OR"
+                android:textColor="#FFFFFF"
+                app:layout_constraintBottom_toTopOf="@+id/googleSignInButton"
+                app:layout_constraintEnd_toStartOf="@+id/view2"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/view"
+                app:layout_constraintTop_toBottomOf="@+id/loginButton" />
 
             <ToggleButton
                 android:id="@+id/loginPasswordShowButton"
@@ -246,19 +274,6 @@
                 app:layout_constraintBottom_toBottomOf="@+id/loginPaswordEditText"
                 app:layout_constraintEnd_toEndOf="@+id/loginPaswordEditText"
                 app:layout_constraintTop_toTopOf="@+id/loginPaswordEditText" />
-
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"
-                android:text="OR"
-                app:layout_constraintBottom_toTopOf="@+id/googleSignInButton"
-                app:layout_constraintEnd_toStartOf="@+id/view2"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/view"
-                app:layout_constraintTop_toBottomOf="@+id/loginButton" />
 
             <view
                 android:id="@+id/view"
