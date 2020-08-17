@@ -3,9 +3,7 @@ package com.suno;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
@@ -18,30 +16,21 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.Builder;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -49,38 +38,22 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 public class SignUpActivity extends AppCompatActivity {
+
     private FirebaseAuth mAuth;
-
-    EditText loginUsername;
-    EditText loginPassword;
-    EditText signUpEmail;
-    EditText signUpPassword;
-    EditText signUpRetypePassword;
-
-    Button loginButton;
-    Button signUpButton;
-    ToggleButton toggleButton;
-    ToggleButton logInCardShowPassword;
-    ToggleButton signUpCardShowPassword;
-
-    Button signInButton;
-
-    CardView loginCardView;
-    CardView signUpCardView;
-
+    EditText loginUsername, loginPassword, signUpEmail, signUpPassword, signUpRetypePassword;
+    Button loginButton, signUpButton, googleSignInButton, facebookLoginButton;
+    ToggleButton toggleButton, logInCardShowPassword, signUpCardShowPassword;
+    CardView loginCardView, signUpCardView;
     ImageView logo;
     GoogleSignInClient googleSignInClient;
-
     ProgressDialog progressDialog;
     CallbackManager mCallbackManager;
 
-
+    // CHECK IF USER IS ALREADY LOGGED IN
     @Override
     protected void onStart() {
         super.onStart();
@@ -97,39 +70,6 @@ public class SignUpActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).hide();
         progressDialog = new ProgressDialog(this);
 
-        mAuth = FirebaseAuth.getInstance();
-
-        FacebookSdk.sdkInitialize(SignUpActivity.this);
-
-        // Initialize Facebook Login button
-        mCallbackManager = CallbackManager.Factory.create();
-        Button facebookLoginButton = findViewById(R.id.facebookLoginButton);
-        facebookLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LoginManager.getInstance().logInWithReadPermissions(SignUpActivity.this, Arrays.asList("email", "public profile"));
-                LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-//                Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                        handleFacebookAccessToken(loginResult.getAccessToken());
-                    }
-
-                    @Override
-                    public void onCancel() {
-//                Log.d(TAG, "facebook:onCancel");
-                        // ...
-                    }
-
-                    @Override
-                    public void onError(FacebookException error) {
-//                Log.d(TAG, "facebook:onError", error);
-                        // ...
-                    }
-                });
-            }
-        });
-
         logo = findViewById(R.id.appLogo);
         loginUsername = findViewById(R.id.loginUsernameEditText);
         loginPassword = findViewById(R.id.loginPaswordEditText);
@@ -143,9 +83,39 @@ public class SignUpActivity extends AppCompatActivity {
         logInCardShowPassword = findViewById(R.id.loginPasswordShowButton);
         signUpCardShowPassword = findViewById(R.id.signupPasswordShowButton);
         toggleButton = findViewById(R.id.loginSignupToggleButton);
-
         // GOOGLE SIGN IN BUTTON
-        signInButton = findViewById(R.id.googleSignInButton);
+        googleSignInButton = findViewById(R.id.googleSignInButton);
+        // FACEBOOK LOGIN BUTTON
+        facebookLoginButton = findViewById(R.id.facebookLoginButton);
+
+        // FIREBASE AUTHENTICATION
+        mAuth = FirebaseAuth.getInstance();
+
+        // INITIALIZING FACEBOOK SDK
+        FacebookSdk.sdkInitialize(SignUpActivity.this);
+
+        // Initialize Facebook Login
+        mCallbackManager = CallbackManager.Factory.create();
+        facebookLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LoginManager.getInstance().logInWithReadPermissions(SignUpActivity.this, Arrays.asList("email", "public profile"));
+                LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        handleFacebookAccessToken(loginResult.getAccessToken());
+                    }
+                    @Override
+                    public void onCancel() {
+                        Toast.makeText(SignUpActivity.this, "Request Cancelled", Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onError(FacebookException error) {
+                        Toast.makeText(SignUpActivity.this, "Request Error!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
 
         // GOOGLE SIGN IN OPTIONS TO GET THE USERDATA
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -155,7 +125,7 @@ public class SignUpActivity extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(this,googleSignInOptions);
 
         // GOOGLE SIGN IN BUTTON'S CLICK LISTENER
-        signInButton.setOnClickListener(new View.OnClickListener() {
+        googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 signInWithGoogle();
@@ -307,11 +277,11 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-    // RESULT STORED HERE AFTER FETCHING FROM GOOGLE SIGN IN
+    // RESULT STORED HERE AFTER FETCHING FROM GOOGLE AND FACEBOOK SIGN IN
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data); // DATA CALLBACK FOR FACEBOOK
         if (data != null) {
             progressDialog.show();
             progressDialog.setMessage("Logging you in...");
@@ -330,6 +300,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
+    // AUTHENTICATING USER TO FIREBASE
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
@@ -355,6 +326,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
+    // WHEN SIGN UP WITH EMAIL, USER DETAILS ARE STORED IN THE DATABASE
     public void uploadUserDetailsToDatabase(String email, String password){
         User user = new User(email, password);
         FirebaseDatabase.getInstance().getReference("Users").push()
@@ -371,6 +343,7 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+    // HANDLE INTENTS TO MAIN ACTIVITY
     public void UpdateUI(){
         Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);

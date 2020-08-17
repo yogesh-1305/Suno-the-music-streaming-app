@@ -59,18 +59,19 @@ public class UploadSongActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_song);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Upload Song");
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
-        assert user != null;
-        currentUser = user.getEmail();
-        storageReference = FirebaseStorage.getInstance().getReference();
-        progressDialog = new ProgressDialog(this);
 
         selectSongNameEditText = findViewById(R.id.selectSong);
         selectImage = findViewById(R.id.selectImage);
         uploadButton = findViewById(R.id.uploadSongButton);
         artistName = findViewById(R.id.artistNameEditText);
         selectSong = findViewById(R.id.selectSongButton);
+
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        assert user != null;
+        currentUser = user.getEmail();
+        storageReference = FirebaseStorage.getInstance().getReference();
+        progressDialog = new ProgressDialog(this);
 
         selectSong.setOnClickListener(new View.OnClickListener() {
             @Override

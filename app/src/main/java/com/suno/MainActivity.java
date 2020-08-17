@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.example.jean.jcplayer.model.JcAudio;
@@ -42,25 +41,29 @@ public class MainActivity extends AppCompatActivity {
     JcPlayerView jcPlayerView;
     List<JcAudio> jcAudios;
     List<String> thumbnail;
-
     FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        listView = findViewById(R.id.songsList);
+        jcPlayerView = findViewById(R.id.jcplayer);
+
         mAuth = FirebaseAuth.getInstance();
+
         progressDialog = new ProgressDialog(this);
         progressDialog.show();
         progressDialog.setMessage("Please Wait...");
-        listView = findViewById(R.id.songsList);
+
         songsNameList = new ArrayList<>();
         songsUrlList = new ArrayList<>();
         songsArtistList = new ArrayList<>();
         songsDurationList = new ArrayList<>();
         jcAudios = new ArrayList<>();
         thumbnail = new ArrayList<>();
-        jcPlayerView = findViewById(R.id.jcplayer);
+
         retrieveSongs();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -82,13 +85,15 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     Song song = ds.getValue(Song.class);
-                    songsNameList.add(song.getSongName());
-                    songsUrlList.add(song.getSongUrl());
-                    songsArtistList.add(song.getSongArtist());
-                    songsDurationList.add(song.getSongDuration());
-                    thumbnail.add(song.getImageUrl());
-
-                    jcAudios.add(JcAudio.createFromURL(song.getSongName(), song.getSongUrl()));
+                    assert song != null;
+                    if (!songsNameList.contains(song.getSongName())) {
+                        songsNameList.add(song.getSongName());
+                        songsUrlList.add(song.getSongUrl());
+                        songsArtistList.add(song.getSongArtist());
+                        songsDurationList.add(song.getSongDuration());
+                        thumbnail.add(song.getImageUrl());
+                        jcAudios.add(JcAudio.createFromURL(song.getSongName(), song.getSongUrl()));
+                    }
                 }
                 adapter = new ListAdapter(getApplicationContext(), songsNameList, thumbnail, songsArtistList, songsDurationList);
                 jcPlayerView.initPlaylist(jcAudios, null);
@@ -103,12 +108,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.app_menu,menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+    // menu function
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.uploadItem){
