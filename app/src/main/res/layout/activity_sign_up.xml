@@ -220,7 +220,7 @@
                 android:background="@drawable/edit_text_layout"
                 android:ems="10"
                 android:hint="Email"
-                android:inputType="textPersonName"
+                android:inputType="textEmailAddress"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:textColorHint="#7E7B7B"

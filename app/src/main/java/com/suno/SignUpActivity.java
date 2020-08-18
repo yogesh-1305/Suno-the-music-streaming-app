@@ -108,10 +108,12 @@ public class SignUpActivity extends AppCompatActivity {
                     @Override
                     public void onCancel() {
                         Toast.makeText(SignUpActivity.this, "Request Cancelled", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
                     }
                     @Override
                     public void onError(FacebookException error) {
                         Toast.makeText(SignUpActivity.this, "Request Error!", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
                     }
                 });
             }

@@ -4,12 +4,15 @@
     tools:ignore="ExtraText">
     android:shape="rectangle" android:padding="40dp">
     <gradient
-        android:startColor="#4C4B4B"
-        android:endColor="#4C4B4B"
+        android:startColor="#FFFFFF"
+        android:endColor="#FFFFFF"
         android:angle="-90"/>
     <corners
         android:bottomRightRadius="5dp"
         android:bottomLeftRadius="5dp"
         android:topLeftRadius="5dp"
         android:topRightRadius="5dp"/>
+    <stroke
+        android:color="#FF1744"
+        android:width="3dp"/>
 </shape>

@@ -215,6 +215,7 @@ public class UploadSongActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 Log.i("database", "upload success");
                 progressDialog.dismiss();
+
                 Toast.makeText(getApplicationContext(), "Song Uploaded to Database", Toast.LENGTH_SHORT).show();
                 finish();
             }
