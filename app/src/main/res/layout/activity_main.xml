@@ -6,25 +6,52 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ListView
-        android:id="@+id/songsList"
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        android:id="@+id/sliding_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="#000000"
-        android:choiceMode="singleChoice"
-        app:layout_constraintBottom_toTopOf="@+id/jcplayer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.example.jean.jcplayer.view.JcPlayerView
-        android:id="@+id/jcplayer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="#FF1744"
-        android:visibility="gone"
+        android:gravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.48000002"
+        app:umanoPanelHeight="68dp"
+        app:umanoShadowHeight="4dp">
+
+        <ListView
+            android:id="@+id/songsList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#000000" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/jcplayer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_music" />
+
+            <com.example.jean.jcplayer.view.JcPlayerView
+                android:id="@+id/jcplayer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FF1744"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

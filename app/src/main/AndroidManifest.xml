@@ -19,7 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UploadSongActivity" />
+        <activity android:name=".UploadSongActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".MainActivity"/>
 
         <meta-data

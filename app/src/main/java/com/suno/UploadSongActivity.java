@@ -59,6 +59,7 @@ public class UploadSongActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_song);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Upload Song");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         selectSongNameEditText = findViewById(R.id.selectSong);
         selectImage = findViewById(R.id.selectImage);

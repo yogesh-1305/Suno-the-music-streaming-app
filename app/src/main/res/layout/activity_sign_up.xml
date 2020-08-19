@@ -16,7 +16,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/capture"
+        app:srcCompat="@drawable/ic_music"
         tools:visibility="visible" />
 
     <ToggleButton
@@ -39,6 +39,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:visibility="gone"
+        app:cardBackgroundColor="#000000"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toTopOf="@+id/loginSignupToggleButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -145,6 +146,7 @@
         android:layout_height="0dp"
         android:layout_marginBottom="32dp"
         android:visibility="visible"
+        app:cardBackgroundColor="#000000"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toTopOf="@+id/loginSignupToggleButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -252,10 +254,9 @@
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:layout_marginTop="32dp"
                 android:text="OR"
                 android:textColor="#FFFFFF"
-                app:layout_constraintBottom_toTopOf="@+id/googleSignInButton"
                 app:layout_constraintEnd_toStartOf="@+id/view2"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/view"

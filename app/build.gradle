@@ -42,4 +42,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.3.2'
     implementation 'com.google.android.gms:play-services-auth:18.1.0'
     implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
+    implementation 'com.sothree.slidinguppanel:library:3.4.0'
 }
