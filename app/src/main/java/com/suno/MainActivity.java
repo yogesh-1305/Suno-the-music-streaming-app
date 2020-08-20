@@ -1,18 +1,23 @@
 package com.suno;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.jean.jcplayer.JcPlayerManagerListener;
+import com.example.jean.jcplayer.general.JcStatus;
 import com.example.jean.jcplayer.model.JcAudio;
 import com.example.jean.jcplayer.view.JcPlayerView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,12 +32,17 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     private boolean checkPermission = false;
+
+    TextView currentPlayingSongName, currentPlayingArtistName;
+    ImageView currentPlayingSongThumbnail, largePlayerImage;
+    int pos;
     ProgressDialog progressDialog;
     ListView listView;
     List<String> songsNameList;
@@ -50,8 +60,58 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        currentPlayingSongName = findViewById(R.id.CurrentPlayingSongName);
+        currentPlayingArtistName = findViewById(R.id.CurrentPlayingArtistName);
+        currentPlayingSongThumbnail = findViewById(R.id.cirrentPlayingSongThumbnail);
+        largePlayerImage = findViewById(R.id.LargePlayerImage);
+
         listView = findViewById(R.id.songsList);
         jcPlayerView = findViewById(R.id.jcplayer);
+        jcPlayerView.setJcPlayerManagerListener(new JcPlayerManagerListener() {
+            @Override
+            public void onPreparedAudio(@NonNull JcStatus jcStatus) {
+                Log.i("|||||PrepareAudio|||||", jcStatus.getJcAudio().getTitle());
+                currentPlayingSongName.setText(jcStatus.getJcAudio().getTitle());
+                currentPlayingArtistName.setText(songsArtistList.get(jcStatus.getJcAudio().getPosition()));
+                Picasso.get().load(thumbnail.get(jcStatus.getJcAudio().getPosition())).into(largePlayerImage);
+                Picasso.get().load(thumbnail.get(jcStatus.getJcAudio().getPosition())).into(currentPlayingSongThumbnail);
+            }
+
+            @Override
+            public void onCompletedAudio() {
+                Log.i("||||CompletedAudio|||||", "]]]]]]]]]]]]]]");
+            }
+
+            @Override
+            public void onPaused(@NonNull JcStatus jcStatus) {
+                Log.i("|||||onPaused|||||", jcStatus.toString());
+            }
+
+            @Override
+            public void onContinueAudio(@NonNull JcStatus jcStatus) {
+                Log.i("|||ContinueAudio|||||", jcStatus.toString());
+            }
+
+            @Override
+            public void onPlaying(@NonNull JcStatus jcStatus) {
+                Log.i("|||||onPlaying|||||", jcStatus.toString());
+            }
+
+            @Override
+            public void onTimeChanged(@NonNull JcStatus jcStatus) {
+                Log.i("|||||onTimeChanged|||||", jcStatus.toString());
+            }
+
+            @Override
+            public void onStopped(@NonNull JcStatus jcStatus) {
+                Log.i("|||||onStopped|||||", jcStatus.toString());
+            }
+
+            @Override
+            public void onJcpError(@NonNull Throwable throwable) {
+                Log.i("|||||onJcpError|||||", throwable.toString());
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -71,8 +131,13 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                pos = i;
                 jcPlayerView.playAudio(jcAudios.get(i));
                 jcPlayerView.setVisibility(View.VISIBLE);
+                currentPlayingSongName.setText(songsNameList.get(i));
+                currentPlayingArtistName.setText(songsArtistList.get(i));
+                Picasso.get().load(thumbnail.get(i)).into(currentPlayingSongThumbnail);
+                Picasso.get().load(thumbnail.get(i)).into(largePlayerImage);
                 jcPlayerView.createNotification();
                 adapter.notifyDataSetChanged();
             }
