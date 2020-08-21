@@ -11,12 +11,12 @@
         android:id="@+id/appLogo"
         android:layout_width="0dp"
         android:layout_height="250dp"
-        android:scaleType="centerCrop"
+        android:scaleType="centerInside"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/custom_size__1"
+        app:srcCompat="@drawable/logoforsuno"
         tools:visibility="visible" />
 
     <ToggleButton

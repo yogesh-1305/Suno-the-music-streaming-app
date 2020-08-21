@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,16 +8,11 @@
 
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
         android:id="@+id/sliding_layout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="#000000"
         android:gravity="bottom"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.48000002"
-        app:umanoPanelHeight="60dp"
+        app:umanoPanelHeight="55dp"
         app:umanoShadowHeight="4dp">
 
         <ListView
@@ -28,14 +23,15 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/button_layout">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/currentlyPlayingCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="20dp"
-                app:cardBackgroundColor="#FA434242"
+                android:background="@drawable/button_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +40,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#FA434242"
+                    android:background="@drawable/button_layout"
                     android:orientation="horizontal"
                     android:padding="3dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -132,7 +128,7 @@
                 app:progress_color="#C6FF00"
                 app:random_icon_color="@color/playerButtonsColor"
                 app:repeat_icon_color="@color/playerButtonsColor"
-                app:seek_bar_color="@color/colorPrimary"
+                app:seek_bar_color="@color/playerButtonsColor"
                 app:text_audio_current_duration_color="@color/playerButtonsColor"
                 app:text_audio_duration_color="@color/playerButtonsColor"
                 app:text_audio_title_color="@color/playerButtonsColor"
@@ -143,4 +139,4 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
