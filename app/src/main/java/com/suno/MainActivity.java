@@ -2,6 +2,8 @@ package com.suno;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -20,6 +22,7 @@ import com.example.jean.jcplayer.JcPlayerManagerListener;
 import com.example.jean.jcplayer.general.JcStatus;
 import com.example.jean.jcplayer.model.JcAudio;
 import com.example.jean.jcplayer.view.JcPlayerView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,6 +43,9 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity{
     private boolean checkPermission = false;
 
+    ConstraintLayout bottomSheetLayout;
+    BottomSheetBehavior bottomSheetBehavior;
+
     TextView currentPlayingSongName, currentPlayingArtistName;
     ImageView currentPlayingSongThumbnail, largePlayerImage;
     int pos;
@@ -59,6 +65,9 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        bottomSheetLayout = findViewById(R.id.playerBottomSheetLayout);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
 
         currentPlayingSongName = findViewById(R.id.CurrentPlayingSongName);
         currentPlayingArtistName = findViewById(R.id.CurrentPlayingArtistName);
@@ -132,6 +141,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 pos = i;
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 jcPlayerView.playAudio(jcAudios.get(i));
                 jcPlayerView.setVisibility(View.VISIBLE);
                 currentPlayingSongName.setText(songsNameList.get(i));
