@@ -67,6 +67,7 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        getSupportActionBar().hide();
         progressDialog = new ProgressDialog(this);
 
         logo = findViewById(R.id.appLogo);
@@ -298,6 +299,8 @@ public class SignUpActivity extends AppCompatActivity {
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
+        }else {
+            progressDialog.dismiss();
         }
     }
 
@@ -346,8 +349,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     // HANDLE INTENTS TO MAIN ACTIVITY
     public void UpdateUI(){
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this,MainActivity.class));
         finish();
     }
 }

@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -197,14 +199,21 @@ public class MainActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.uploadItem){
             if (validatePermissions()){
-                Intent intent = new Intent(this,UploadSongActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(this,UploadSongActivity.class));
             }
         }else if (item.getItemId() == R.id.signOut){
-            mAuth.signOut();
-            Intent intent = new Intent(getApplicationContext(),SignUpActivity.class);
-            startActivity(intent);
-            finish();
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Confirm Sign Out?")
+                    .setIcon(R.drawable.com_facebook_close)
+                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            mAuth.signOut();
+                            startActivity(new Intent(MainActivity.this, SignUpActivity.class));
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("NO",null).show();
         }
         return super.onOptionsItemSelected(item);
     }

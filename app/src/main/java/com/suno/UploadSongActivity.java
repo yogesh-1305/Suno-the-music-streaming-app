@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -25,6 +27,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
@@ -58,14 +61,20 @@ public class UploadSongActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_song);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Upload Song");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().hide();
 
         selectSongNameEditText = findViewById(R.id.selectSong);
         selectImage = findViewById(R.id.selectImage);
         uploadButton = findViewById(R.id.uploadSongButton);
         artistName = findViewById(R.id.artistNameEditText);
         selectSong = findViewById(R.id.selectSongButton);
+        ImageButton backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -145,10 +154,20 @@ public class UploadSongActivity extends AppCompatActivity {
             Toast.makeText(this, "Please select a Thumbnail", Toast.LENGTH_SHORT).show();
         }
         else {
-            fileName = selectSongNameEditText.getText().toString();
-            String artist = artistName.getText().toString();
-            uploadImageToServer(bytes,fileName);
-            uploadFileToServer(uriSong,fileName,artist,songLength);
+            new AlertDialog.Builder(UploadSongActivity.this)
+                    .setTitle("Confirm Upload")
+                    .setMessage("Once Uploaded, song data cannot be changed, please make sure you've entered correct data.")
+                    .setIcon(R.drawable.ic_baseline_cloud_upload_green)
+                    .setPositiveButton("UPLOAD", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            fileName = selectSongNameEditText.getText().toString();
+                            String artist = artistName.getText().toString();
+                            uploadImageToServer(bytes,fileName);
+                            uploadFileToServer(uriSong,fileName,artist,songLength);
+                        }
+                    })
+                    .setNegativeButton("CANCEL",null).show();
         }
     }
 
