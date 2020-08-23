@@ -2,6 +2,7 @@ package com.suno;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.Manifest;
@@ -14,7 +15,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -42,14 +45,17 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private boolean checkPermission = false;
 
     ConstraintLayout bottomSheetLayout;
     BottomSheetBehavior bottomSheetBehavior;
 
+    ImageButton collapsePlayer, playListButton;
+    CardView currentPlayingCardView;
+
     TextView currentPlayingSongName, currentPlayingArtistName;
-    ImageView currentPlayingSongThumbnail, largePlayerImage;
+    ImageView largePlayerImage, currentPlayingImage;
     int pos;
     ProgressDialog progressDialog;
     ListView listView;
@@ -68,16 +74,28 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bottomSheetLayout = findViewById(R.id.playerBottomSheetLayout);
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
-
-        currentPlayingSongName = findViewById(R.id.CurrentPlayingSongName);
-        currentPlayingArtistName = findViewById(R.id.CurrentPlayingArtistName);
-        currentPlayingSongThumbnail = findViewById(R.id.cirrentPlayingSongThumbnail);
         largePlayerImage = findViewById(R.id.LargePlayerImage);
-
         listView = findViewById(R.id.songsList);
         jcPlayerView = findViewById(R.id.jcplayer);
+        bottomSheetLayout = findViewById(R.id.playerBottomSheetLayout);
+        collapsePlayer = findViewById(R.id.collapsePlayerButton);
+        playListButton = findViewById(R.id.playListButton);
+        currentPlayingSongName = findViewById(R.id.currentlyPlayingSongName);
+        currentPlayingArtistName = findViewById(R.id.currentlyPlayingArtistName);
+        currentPlayingImage = findViewById(R.id.currentPlayingImage);
+        currentPlayingCardView = findViewById(R.id.currentPlayingCardView);
+
+        currentPlayingCardView.setOnClickListener(this);
+
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
+
+        collapsePlayer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
+
         jcPlayerView.setJcPlayerManagerListener(new JcPlayerManagerListener() {
             @Override
             public void onPreparedAudio(@NonNull JcStatus jcStatus) {
@@ -85,7 +103,7 @@ public class MainActivity extends AppCompatActivity{
                 currentPlayingSongName.setText(jcStatus.getJcAudio().getTitle());
                 currentPlayingArtistName.setText(songsArtistList.get(jcStatus.getJcAudio().getPosition()));
                 Picasso.get().load(thumbnail.get(jcStatus.getJcAudio().getPosition())).into(largePlayerImage);
-                Picasso.get().load(thumbnail.get(jcStatus.getJcAudio().getPosition())).into(currentPlayingSongThumbnail);
+                Picasso.get().load(thumbnail.get(jcStatus.getJcAudio().getPosition())).into(currentPlayingImage);
             }
 
             @Override
@@ -145,13 +163,30 @@ public class MainActivity extends AppCompatActivity{
                 pos = i;
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 jcPlayerView.playAudio(jcAudios.get(i));
-                jcPlayerView.setVisibility(View.VISIBLE);
+                currentPlayingCardView.setVisibility(View.VISIBLE);
                 currentPlayingSongName.setText(songsNameList.get(i));
                 currentPlayingArtistName.setText(songsArtistList.get(i));
-                Picasso.get().load(thumbnail.get(i)).into(currentPlayingSongThumbnail);
                 Picasso.get().load(thumbnail.get(i)).into(largePlayerImage);
+                Picasso.get().load(thumbnail.get(i)).into(currentPlayingImage);
                 jcPlayerView.createNotification();
                 adapter.notifyDataSetChanged();
+            }
+        });
+
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+                Log.i("scroll", String.valueOf(i));
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+                Log.i("scroll", i + "/" + i1 + "/" + i2 +"/"+ absListView);
+                if (i>2){
+                    currentPlayingCardView.setVisibility(View.INVISIBLE);
+                }else if (i == 0){
+                    currentPlayingCardView.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
@@ -237,5 +272,12 @@ public class MainActivity extends AppCompatActivity{
                     }
                 }).check();
         return checkPermission;
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.currentPlayingCardView){
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
     }
 }

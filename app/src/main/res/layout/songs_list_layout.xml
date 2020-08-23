@@ -29,14 +29,27 @@
             app:layout_constraintTop_toTopOf="@+id/cardView"
             tools:ignore="UseCompoundDrawables">
 
-            <ImageView
-                android:id="@+id/songThumbnail"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/thumbnailCardView"
                 android:layout_width="70dp"
                 android:layout_height="50dp"
+                app:cardBackgroundColor="#00FFFFFF"
+                app:cardCornerRadius="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_photo_24" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/songThumbnail"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_photo_24" />
+
+            </androidx.cardview.widget.CardView>
 
             <ImageView
                 android:id="@+id/currentlyPlaying"
@@ -60,7 +73,7 @@
                 android:text="artist name |"
                 android:textColor="#878383"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/songThumbnail"
+                app:layout_constraintStart_toEndOf="@+id/thumbnailCardView"
                 app:layout_constraintTop_toBottomOf="@+id/songName" />
 
             <TextView
@@ -77,7 +90,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/currentlyPlaying"
-                app:layout_constraintStart_toEndOf="@+id/songThumbnail"
+                app:layout_constraintStart_toEndOf="@+id/thumbnailCardView"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView

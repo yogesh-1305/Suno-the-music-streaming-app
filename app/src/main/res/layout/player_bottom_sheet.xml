@@ -11,123 +11,85 @@
     android:background="@color/cardview_dark_background"
     app:layout_behavior="@string/bottom_sheet_behavior"
     app:behavior_hideable="true"
-    app:behavior_peekHeight="55dp"
+    app:behavior_peekHeight="0dp"
     android:focusable="true"
     tools:ignore="PrivateResource">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/currentlyPlayingCardView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="20dp"
-            app:cardBackgroundColor="#FA434242"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#FA434242"
-                android:orientation="horizontal"
-                android:padding="3dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/currentlyPlayingCardView"
-                tools:ignore="UseCompoundDrawables">
-
-                <ImageView
-                    android:id="@+id/cirrentPlayingSongThumbnail"
-                    android:layout_width="70dp"
-                    android:layout_height="50dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_photo_24" />
-
-                <ImageView
-                    android:id="@+id/currentlyPlaying"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/ic_play"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:visibility="visible" />
-
-                <TextView
-                    android:id="@+id/CurrentPlayingArtistName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:fontFamily="@font/handlee"
-                    android:paddingStart="10dp"
-                    android:text="artist name |"
-                    android:textColor="#878383"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/cirrentPlayingSongThumbnail"
-                    app:layout_constraintTop_toBottomOf="@+id/songName" />
-
-                <TextView
-                    android:id="@+id/CurrentPlayingSongName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="@font/handlee"
-                    android:paddingStart="10dp"
-                    android:text="song name"
-                    android:textAlignment="gravity"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@+id/currentlyPlaying"
-                    app:layout_constraintStart_toEndOf="@+id/cirrentPlayingSongThumbnail"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
-
-    <ImageView
-        android:id="@+id/LargePlayerImage"
+    <androidx.cardview.widget.CardView
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@color/cardview_dark_background"
+        android:layout_height="350dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/image_layout"
+        app:cardBackgroundColor="#676666"
+        app:cardCornerRadius="20dp"
+        android:outlineSpotShadowColor="@color/cardview_light_background"
         app:layout_constraintBottom_toTopOf="@+id/jcplayer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/LargePlayerImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cropToPadding="true"
+            android:scaleType="fitXY"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.cardview.widget.CardView>
+
+
+    <com.example.jean.jcplayer.view.JcPlayerView
+        android:id="@+id/jcplayer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/cardview_dark_background"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/playListButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentlyPlayingCardView"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/ic_music" />
+        app:next_icon_color="@color/playerButtonsColor"
+        app:pause_icon_color="@color/playerButtonsColor"
+        app:play_icon_color="@color/playerButtonsColor"
+        app:previous_icon_color="@color/playerButtonsColor"
+        app:progress_color="#C6FF00"
+        app:random_icon_color="@color/playerButtonsColor"
+        app:repeat_icon_color="@color/playerButtonsColor"
+        app:seek_bar_color="@color/playerButtonsColor"
+        app:text_audio_current_duration_color="@color/playerButtonsColor"
+        app:text_audio_duration_color="@color/playerButtonsColor"
+        app:text_audio_title_color="@color/playerButtonsColor" />
 
-    <com.example.jean.jcplayer.view.JcPlayerView
-            android:id="@+id/jcplayer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#333333"
-            android:visibility="visible"
-            app:next_icon_color="@color/playerButtonsColor"
-            app:pause_icon_color="@color/playerButtonsColor"
-            app:play_icon_color="@color/playerButtonsColor"
-            app:previous_icon_color="@color/playerButtonsColor"
-            app:progress_color="#C6FF00"
-            app:random_icon_color="@color/playerButtonsColor"
-            app:repeat_icon_color="@color/playerButtonsColor"
-            app:seek_bar_color="@color/playerButtonsColor"
-            app:text_audio_current_duration_color="@color/playerButtonsColor"
-            app:text_audio_duration_color="@color/playerButtonsColor"
-            app:text_audio_title_color="@color/playerButtonsColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+    <ImageButton
+        android:id="@+id/collapsePlayerButton"
+        style="@style/Widget.AppCompat.ImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="#00FFFFFF"
+        android:scaleType="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_down" />
+
+    <ImageButton
+        android:id="@+id/playListButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="32dp"
+        android:background="#00FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_baseline_playlist_play_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
